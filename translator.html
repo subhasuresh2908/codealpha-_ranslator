@@ -1,0 +1,140 @@
+<!DOCTYPE html>
+<html>
+<head>
+<title>AI Language Translator</title>
+
+<style>
+body{
+    font-family:Arial;
+    background:linear-gradient(135deg,#4facfe,#00f2fe);
+    display:flex;
+    justify-content:center;
+    align-items:center;
+    height:100vh;
+}
+
+.container{
+    background:white;
+    padding:25px;
+    border-radius:15px;
+    width:420px;
+    box-shadow:0 10px 25px rgba(0,0,0,0.25);
+    text-align:center;
+}
+
+textarea{
+    width:100%;
+    height:90px;
+    padding:10px;
+    margin:10px 0;
+    border-radius:10px;
+    border:1px solid #ccc;
+}
+
+select,button{
+    width:100%;
+    padding:10px;
+    margin:6px 0;
+    border-radius:8px;
+    border:none;
+}
+
+button{
+    background:#4facfe;
+    color:white;
+    cursor:pointer;
+    font-weight:bold;
+}
+
+button:hover{
+    background:#00c6ff;
+}
+
+#output{
+    background:#f1f1f1;
+    padding:12px;
+    min-height:60px;
+    border-radius:10px;
+    margin-top:10px;
+}
+</style>
+</head>
+
+<body>
+
+<div class="container">
+
+<h2>🌍 AI Language Translator</h2>
+
+<textarea id="inputText" placeholder="Enter text here"></textarea>
+
+<select id="source">
+<option value="en">English</option>
+<option value="ta">Tamil</option>
+<option value="hi">Hindi</option>
+<option value="ml">Malayalam</option>
+<option value="fr">French</option>
+<option value="es">Spanish</option>
+<option value="de">German</option>
+</select>
+
+<select id="target">
+<option value="ta">Tamil</option>
+<option value="en">English</option>
+<option value="hi">Hindi</option>
+<option value="ml">Malayalam</option>
+<option value="fr">French</option>
+<option value="es">Spanish</option>
+<option value="de">German</option>
+</select>
+
+<button onclick="translateText()">Translate</button>
+
+<div id="output">Translation appears here...</div>
+
+<button onclick="copyText()">Copy</button>
+<button onclick="speakText()">🔊 Speak</button>
+
+</div>
+
+<script>
+
+async function translateText(){
+let text=document.getElementById("inputText").value;
+let source=document.getElementById("source").value;
+let target=document.getElementById("target").value;
+
+if(text.trim()==""){
+    alert("Enter text first");
+    return;
+}
+
+let url=`https://api.mymemory.translated.net/get?q=${encodeURIComponent(text)}&langpair=${source}|${target}`;
+
+let res=await fetch(url);
+let data=await res.json();
+
+document.getElementById("output").innerText=data.responseData.translatedText;
+}
+
+// copy
+function copyText(){
+let text=document.getElementById("output").innerText;
+navigator.clipboard.writeText(text);
+alert("Copied!");
+}
+
+// text to speech
+function speakText(){
+let text=document.getElementById("output").innerText;
+let lang=document.getElementById("target").value;
+
+let speech=new SpeechSynthesisUtterance(text);
+speech.lang=lang;
+speechSynthesis.speak(speech);
+}
+
+</script>
+
+</body>
+</html>
